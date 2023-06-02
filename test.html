@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Endpoint Test</title>
+    <style>
+        h1{
+            text-align: center;
+            text-decoration: dotted;
+        }
+        *{
+            background-color: rgb(180, 179, 179);
+            color:black;
+        }
+        #results {
+            margin: auto auto;
+                        width: 100%;
+
+        }
+
+        #results table {
+            border-collapse: collapse;
+                        width: 100%;
+
+        }
+
+        #results table,
+        #results th,
+        #results td {
+            border: 1px solid black;
+            width: 100%;
+            padding: 3em;
+            margin: auto auto
+        }
+    </style>
+</head>
+
+<body>
+    <h1>API Endpoint Test (Beta Version)</h1>
+
+    <div id="results">
+        <table>
+            <tr>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Speed (ms)</th>
+                <th>Data Type</th>
+                <th>Security</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        async function testEndpoint(endpoint) {
+            const { name, url, method } = endpoint;
+
+            const options = {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: 'value' }) // Modify the body as needed
+            };
+
+            const response = await fetch(url, options);
+            const data = await response.json();
+
+            const resultRow = document.createElement('tr');
+
+            const endpointCell = document.createElement('td');
+            endpointCell.textContent = name;
+            resultRow.appendChild(endpointCell);
+
+            const methodCell = document.createElement('td');
+            methodCell.textContent = method;
+            resultRow.appendChild(methodCell);
+
+            const speedCell = document.createElement('td');
+            speedCell.textContent = response.headers.get('X-Response-Time');
+            resultRow.appendChild(speedCell);
+
+            const dataTypeCell = document.createElement('td');
+            dataTypeCell.textContent = typeof data;
+            resultRow.appendChild(dataTypeCell);
+
+            const securityCell = document.createElement('td');
+            securityCell.textContent = response.headers.get('X-Content-Security-Policy');
+            resultRow.appendChild(securityCell);
+
+            document.querySelector('#results table').appendChild(resultRow);
+        }
+
+        async function runTests() {
+            const endpoints = [
+                { name: 'Endpoint 1', url: 'http://localhost:3000/endpoint1', method: 'GET' },
+                { name: 'Endpoint 2', url: 'http://localhost:3000/endpoint2', method: 'POST' },
+                { name: 'Endpoint 3', url: 'http://localhost:3000/endpoint3', method: 'DELETE' },
+                { name: 'Endpoint 4', url: 'http://localhost:3000/endpoint4', method: 'PUT' },
+                // Add more endpoints and methods to test
+            ];
+
+            for (const endpoint of endpoints)
+            {
+                try
+                {
+                    await testEndpoint(endpoint);
+                } catch (error)
+                {
+                    console.error(`Error testing ${endpoint.name}: ${error}`);
+                }
+            }
+        }
+
+        runTests();
+    </script>
+</body>
+
+</html>
